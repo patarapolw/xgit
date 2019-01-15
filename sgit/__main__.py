@@ -1,6 +1,6 @@
 import sys
 import subprocess
-import json
+import shlex
 from pathlib import Path
 import requests
 
@@ -13,13 +13,28 @@ def main():
         cli_default()
     elif argv[1] == "init":
         cli_init()
-    elif argv[1] == "commit":
+    elif argv[1] in {"commit", "cpush"}:
         try:
             cli_commit(argv[2])
         except IndexError:
-            cli_commit(input("Please input your commit message."))
-    elif argv[2] == "gi":
+            cli_commit(input("Please input your commit message: "))
+        if argv[1] == "cpush":
+            cli_push()
+
+    elif argv[1] == "gi":
         cli_gi()
+    elif argv[1] == "push":
+        cli_push()
+    elif argv[1] in {"-h", "--help", "help"}:
+        print(trim_indent("""
+        Acceptable commands:
+        sgit init           Initialize new git along with .gitignore
+        sgit commit message Commit to git with the following message
+        sgit cpush message  Commit and push to git with the following message
+        sgit gi             Generate gitignore from files in the directory
+        sgit push           Push changes to origin
+        sgit                Prompt for choices
+        """))
 
 def cli_default():
     choice = input(trim_indent("""
@@ -28,13 +43,13 @@ def cli_default():
     2. Commit your current changes
     3. Generate and commit .gitignore
     4. Push to remote
-    Please select [1-4]:
+    Please select [1-4]: 
     """))
 
     if choice == "1":
         cli_init()
     elif choice == "2":
-        cli_commit(input("Please input your commit message."))
+        cli_commit(input("Please input your commit message: "))
     elif choice == "3":
         cli_gi()
     elif choice == "4":
@@ -48,10 +63,12 @@ def cli_commit(s: str):
     call_multiline("""
     git add .
     git commit -m {}
-    """.format(json.dumps(s)))
+    """.format(shlex.quote(s)))
 
 def cli_gi(_commit=True):
-    with open(".gitignore", "a") as f:
+    old_gitignore_rows = Path(".gitignore").read_text().split("\n")
+
+    with open(".gitignore", "w+") as f:
         f.write(Path(__file__).parent.joinpath("gitignore/{}.gitignore".format("global")).read_text())
 
         matched = set()
@@ -76,10 +93,19 @@ def cli_gi(_commit=True):
                 "py": "python"
             }.get(k, k) for k in matched)))
             f.write(r.text)
+        
+        f.seek(0)
+        new_gitignore_rows = f.read().strip().split()
+        for row in old_gitignore_rows:
+            if row not in new_gitignore_rows:
+                f.write(row + "\n")
     
     if _commit:
-        call_multiline("""git ls-files -i --exclude-from=.gitignore | xargs git rm --cached""")
+        subprocess.call(["sh", "-c", "git ls-files -i --exclude-from=.gitignore | xargs git rm --cached"])
         cli_commit(input("Please input your commit message."))
 
 def cli_push():
+    if not subprocess.check_output(["git", "config", "remote.origin.url"]):
+        subprocess.call(["git", "remote", "add", "origin", shlex.quote(input("Please input the Git origin: "))])
+
     subprocess.call(["git", "push", "origin", "master"])
