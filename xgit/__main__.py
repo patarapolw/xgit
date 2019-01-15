@@ -44,7 +44,7 @@ def cli_default():
     3. Commit current changes and push to remote
     4. Generate and commit .gitignore
     5. Push to remote
-    Please select [1-4]: 
+    Please select [1-5]: 
     """))
 
     if choice == "1":

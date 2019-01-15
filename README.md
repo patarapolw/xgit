@@ -34,8 +34,9 @@ xgit                Prompt for choices
 $ xgit
 What do you want to do?
 1. Initialize Git
-2. Commit your current changes
-3. Generate and commit .gitignore
-4. Push to remote
-Please select [1-4]:
+2. Commit current changes
+3. Commit current changes and push to remote
+4. Generate and commit .gitignore
+5. Push to remote
+Please select [1-5]:
 ```
