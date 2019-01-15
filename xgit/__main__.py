@@ -28,12 +28,12 @@ def main():
     elif argv[1] in {"-h", "--help", "help"}:
         print(trim_indent("""
         Acceptable commands:
-        sgit init           Initialize new git along with .gitignore
-        sgit commit message Commit to git with the following message
-        sgit cpush message  Commit and push to git with the following message
-        sgit gi             Generate gitignore from files in the directory
-        sgit push           Push changes to origin
-        sgit                Prompt for choices
+        xgit init           Initialize new git along with .gitignore
+        xgit commit message Commit to git with the following message
+        xgit cpush message  Commit and push to git with the following message
+        xgit gi             Generate gitignore from files in the directory
+        xgit push           Push changes to origin
+        xgit                Prompt for choices
         """))
 
 def cli_default():
