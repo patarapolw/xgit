@@ -43,4 +43,5 @@ Please select [1-5]:
 
 ## Note
 
-`.gitignore` is generated from <https://www.gitignore.io/>, but this project also allows me to generate a custom `.gitignore` based on [/xgit/gitignore/](/xgit/gitignore/).
+- `.gitignore` is generated from <https://www.gitignore.io/>, but this project also allows me to generate a custom `.gitignore` based on [/xgit/gitignore/](/xgit/gitignore/).
+- To learn more about my experience with Git, see <https://github.com/patarapolw/SimpleGit>
