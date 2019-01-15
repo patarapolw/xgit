@@ -2,19 +2,23 @@
 name = "xgit"
 version = "0.1.1"
 description = "An opinionated command line tools to make your life easier with Git and Gitignore"
-authors = ["patarapolw <patarapolw@gmail.com>"]
+authors = ["Pacharapol Withayasakpunt <patarapolw@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/patarapolw/xgit"
+homepage = "https://github.com/patarapolw/xgit"
+keywords = ['git']
 
 [tool.poetry.dependencies]
 python = "^3.5"
 requests = "^2.21"
 
 [tool.poetry.dev-dependencies]
+twine = "^1.12"
 
+[tool.poetry.scripts]
+xgit = 'xgit.__main__:main'
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
-[tool.poetry.scripts]
-xgit = 'xgit.__main__:main'
