@@ -6,6 +6,15 @@ import requests
 
 from .utils import trim_indent, call_multiline
 
+CMD = {
+    "init"  : "Initialize new git along with .gitignore",
+    "gi"    : "Generate gitignore from files in the directory",
+    "commit": "Commit to git with the following message",
+    "cpush" : "Commit current changes and push to remote",
+    "push"  : "Push changes to remote",
+    "pull"  : "Pull changes from remote"
+}
+
 def main():
     argv = sys.argv
 
@@ -28,24 +37,26 @@ def main():
     elif argv[1] in {"-h", "--help", "help"}:
         print(trim_indent("""
         Acceptable commands:
-        xgit init           Initialize new git along with .gitignore
-        xgit commit message Commit to git with the following message
-        xgit cpush message  Commit and push to git with the following message
-        xgit gi             Generate gitignore from files in the directory
-        xgit push           Push changes to origin
+        xgit init           {init}
+        xgit commit message {commit}
+        xgit cpush message  {cpush}
+        xgit gi             {gi}
+        xgit push           {push}
+        xgit pull           {pull}
         xgit                Prompt for choices
-        """))
+        """.format(**CMD)))
 
 def cli_default():
     choice = input(trim_indent("""
     What do you want to do?
-    1. Initialize Git
-    2. Commit current changes
-    3. Commit current changes and push to remote
-    4. Generate and commit .gitignore
-    5. Push to remote
-    Please select [1-5]: 
-    """))
+    1. {init}
+    2. {commit}
+    3. {cpush}
+    4. {gi}
+    5. {push}
+    6. {pull}
+    Please select [1-6]: 
+    """.format(**CMD)))
 
     if choice == "1":
         cli_init()
@@ -57,6 +68,8 @@ def cli_default():
         cli_gi()
     elif choice == "5":
         cli_push()
+    elif choice == "6":
+        cli_pull()
 
 def cli_init():
     cli_gi(_commit=False)
@@ -112,3 +125,6 @@ def cli_push():
         subprocess.call(["git", "remote", "add", "origin", shlex.quote(input("Please input the Git origin: "))])
 
     subprocess.call(["git", "push", "origin", "master"])
+
+def cli_pull():
+    subprocess.call(["git", "pull", "origin", "master"])

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xgit"
-version = "0.1.2"
+version = "0.1.3"
 description = "An opinionated command line tools to make your life easier with Git and Gitignore"
 authors = ["Pacharapol Withayasakpunt <patarapolw@gmail.com>"]
 license = "MIT"
