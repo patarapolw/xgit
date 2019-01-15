@@ -1,8 +1,10 @@
 
 .idea/
 
-# Created by https://www.gitignore.io/api/python
-# Edit at https://www.gitignore.io/?templates=python
+# Created by https://www.gitignore.io/api/global,python
+# Edit at https://www.gitignore.io/?templates=global,python
+
+#!! ERROR: global is undefined. Use list command to see defined gitignore types !!#
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -124,4 +126,4 @@ dmypy.json
 ### Python Patch ###
 .venv/
 
-# End of https://www.gitignore.io/api/python
+# End of https://www.gitignore.io/api/global,python

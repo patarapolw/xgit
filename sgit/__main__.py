@@ -54,7 +54,7 @@ def cli_gi(_commit=True):
     with open(".gitignore", "a") as f:
         f.write("\n")
 
-        matched = set()
+        matched = {"global"}
         for spec, filetypes in {
             "py": ["py"],
             "jvm": ["java", "kt"],
