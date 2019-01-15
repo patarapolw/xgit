@@ -52,9 +52,9 @@ def cli_commit(s: str):
 
 def cli_gi(_commit=True):
     with open(".gitignore", "a") as f:
-        f.write("\n")
+        f.write(Path(__file__).parent.joinpath("gitignore/{}.gitignore".format("global")).read_text())
 
-        matched = {"global"}
+        matched = set()
         for spec, filetypes in {
             "py": ["py"],
             "jvm": ["java", "kt"],
