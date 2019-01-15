@@ -40,3 +40,7 @@ What do you want to do?
 5. Push to remote
 Please select [1-5]:
 ```
+
+## Note
+
+`.gitignore` is generated from <https://www.gitignore.io/>, but this project also allows me to generate a custom `.gitignore` based on [/xgit/gitignore/](/xgit/gitignore/).
