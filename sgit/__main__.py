@@ -40,19 +40,22 @@ def cli_default():
     choice = input(trim_indent("""
     What do you want to do?
     1. Initialize Git
-    2. Commit your current changes
-    3. Generate and commit .gitignore
-    4. Push to remote
+    2. Commit current changes
+    3. Commit current changes and push to remote
+    4. Generate and commit .gitignore
+    5. Push to remote
     Please select [1-4]: 
     """))
 
     if choice == "1":
         cli_init()
-    elif choice == "2":
+    elif choice in {"2", "3"}:
         cli_commit(input("Please input your commit message: "))
-    elif choice == "3":
-        cli_gi()
+        if choice == "3":
+            cli_push()
     elif choice == "4":
+        cli_gi()
+    elif choice == "5":
         cli_push()
 
 def cli_init():

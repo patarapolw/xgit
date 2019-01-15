@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "An opinionated command line tools to make your life easier with Git and Gitignore"
 authors = ["patarapolw <patarapolw@gmail.com>"]
 license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.5"

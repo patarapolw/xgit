@@ -1,7 +1,26 @@
 # sgit
 
+An opinionated command line tools to make your life easier with Git and Gitignore
+
+## Installation
+
+Install as global from pip.
+
 ```
-sgit -h
+pip3 install sgit
+```
+
+Or clone the repo, and install from the clone (and you may also edit as you wish).
+
+```
+git clone https://github.com/patarapolw/sgit.git
+pip3 install -e sgit
+```
+
+## Usage
+
+```
+$ sgit -h
 Acceptable commands:
 sgit init           Initialize new git along with .gitignore
 sgit commit message Commit to git with the following message
