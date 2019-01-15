@@ -82,39 +82,41 @@ def cli_commit(s: str):
     """.format(shlex.quote(s)))
 
 def cli_gi(_commit=True):
-    old_gitignore_rows = Path(".gitignore").read_text().split("\n")
+    gitignore_rows = Path(".gitignore").read_text().split("\n")
+    _append_gitignore(
+        src=Path(__file__).parent.joinpath("gitignore/{}.gitignore".format("global")).read_text().split("\n"),
+        dst=gitignore_rows)
+    
+    matched = set()
+    for spec, filetypes in {
+        "py": ["py"],
+        "jvm": ["java", "kt"],
+        "dart": ["dart"],
+        "node": ["js", "ts", "jsx", "tsx"]
+    }.items():
+        for filetype in filetypes:
+            try:
+                next(Path(".").glob("**/*.{}".format(filetype)))
+                if spec not in matched:
+                    _append_gitignore(
+                        src=Path(__file__).parent.joinpath("gitignore/{}.gitignore".format(spec)).read_text().split("\n"),
+                        dst=gitignore_rows)
+                matched.add(spec)
+                matched.add(filetype)
+            except StopIteration:
+                pass
+    
+    if len(matched) > 0:
+        r = requests.get("https://www.gitignore.io/api/{}".format(",".join({
+            "kt": "kotlin",
+            "py": "python"
+        }.get(k, k) for k in matched)))
+        _append_gitignore(
+            src=r.text.split("\n"),
+            dst=gitignore_rows)
 
-    with open(".gitignore", "w+") as f:
-        f.write(Path(__file__).parent.joinpath("gitignore/{}.gitignore".format("global")).read_text())
-
-        matched = set()
-        for spec, filetypes in {
-            "py": ["py"],
-            "jvm": ["java", "kt"],
-            "dart": ["dart"]
-        }.items():
-            for filetype in filetypes:
-                try:
-                    next(Path(".").glob("**/*.{}".format(filetype)))
-                    if spec not in matched:
-                        f.write(Path(__file__).parent.joinpath("gitignore/{}.gitignore".format(spec)).read_text())
-                    matched.add(spec)
-                    matched.add(filetype)
-                except StopIteration:
-                    pass
-        
-        if len(matched) > 0:
-            r = requests.get("https://www.gitignore.io/api/{}".format(",".join({
-                "kt": "kotlin",
-                "py": "python"
-            }.get(k, k) for k in matched)))
-            f.write(r.text)
-        
-        f.seek(0)
-        new_gitignore_rows = f.read().strip().split()
-        for row in old_gitignore_rows:
-            if row not in new_gitignore_rows:
-                f.write(row + "\n")
+    with open(".gitignore", "w") as f:
+        f.write(gitignore_rows.join("\n") + "\n")      
     
     if _commit:
         subprocess.call(["sh", "-c", "git ls-files -i --exclude-from=.gitignore | xargs git rm --cached"])
@@ -128,3 +130,9 @@ def cli_push():
 
 def cli_pull():
     subprocess.call(["git", "pull", "origin", "master"])
+
+def _append_gitignore(src: list, dst: list):
+    for row in src:
+        if row not in dst:
+            if not row.startswith("#"):
+                dst.append(row)
