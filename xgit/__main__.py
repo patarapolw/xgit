@@ -82,7 +82,10 @@ def cli_commit(s: str):
     """.format(shlex.quote(s)))
 
 def cli_gi(_commit=True):
-    gitignore_rows = Path(".gitignore").read_text().split("\n")
+    try:
+        gitignore_rows = Path(".gitignore").read_text().split("\n")
+    except FileNotFoundError:
+        gitignore_rows = []
     _append_gitignore(
         src=Path(__file__).parent.joinpath("gitignore/{}.gitignore".format("global")).read_text().split("\n"),
         dst=gitignore_rows)
@@ -98,9 +101,13 @@ def cli_gi(_commit=True):
             try:
                 next(Path(".").glob("**/*.{}".format(filetype)))
                 if spec not in matched:
-                    _append_gitignore(
-                        src=Path(__file__).parent.joinpath("gitignore/{}.gitignore".format(spec)).read_text().split("\n"),
-                        dst=gitignore_rows)
+                    try:
+                        _append_gitignore(
+                            src=Path(__file__).parent.joinpath("gitignore/{}.gitignore".format(spec)).read_text().split("\n"),
+                            dst=gitignore_rows)
+                    except FileNotFoundError:
+                        pass
+
                 matched.add(spec)
                 matched.add(filetype)
             except StopIteration:
@@ -116,7 +123,7 @@ def cli_gi(_commit=True):
             dst=gitignore_rows)
 
     with open(".gitignore", "w") as f:
-        f.write(gitignore_rows.join("\n") + "\n")      
+        f.write("\n".join(gitignore_rows) + "\n")      
     
     if _commit:
         subprocess.call(["sh", "-c", "git ls-files -i --exclude-from=.gitignore | xargs git rm --cached"])
